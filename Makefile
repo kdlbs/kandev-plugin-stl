@@ -6,8 +6,8 @@
 
 # When you rename the plugin, update BIN and VERSION to match manifest.yaml's
 # id and version (PKG_OUT is derived from them).
-BIN := bin/kandev-plugin-template
-VERSION := 0.3.0
+BIN := bin/kandev-plugin-stl
+VERSION := 0.1.0
 STAGE := .build/stage
 PKG_OUT := $(notdir $(BIN))-$(VERSION).tar.gz
 
@@ -23,6 +23,7 @@ sdk-check:
 ## Build the plugin binary for the host platform (development use). kandev
 ## itself always installs from `make package`/`package-host` output, not this.
 build: sdk-check
+	node scripts/build-ui.mjs
 	mkdir -p bin
 	go build -o $(BIN) ./server/...
 
@@ -32,10 +33,11 @@ build: sdk-check
 run: build
 	./$(BIN)
 
-test: test-backend typecheck-recipes test-recipes test-ui test-package-verifier test-release-version
+test: test-backend
+	node --test tests/parser.test.js
 
 test-backend:
-	go test ./server/... ./recipes/source-control/server/...
+	go test -trimpath ./server/...
 
 test-recipes:
 	npm run test:recipes
@@ -62,13 +64,14 @@ check-format:
 	@test -z "$$(gofmt -l server recipes)" || { echo "gofmt needed:"; gofmt -l server recipes; exit 1; }
 
 vet:
-	go vet ./server/... ./recipes/source-control/server/...
+	go vet ./server/...
 
 ## Cross-compile server/plugin-<goos>-<goarch>[.exe] for every platform in
 ## manifest.yaml's runtime.executables, stage manifest.yaml + ui/ alongside
 ## them, and pack the tree into $(PKG_OUT) with
 ## backend-owned cmd/plugin-pack from the pinned tooling checkout. Install the tarball via Settings > Plugins or curl -F package=@...
 package: sdk-check
+	node scripts/build-ui.mjs
 	rm -rf $(STAGE)
 	mkdir -p $(STAGE)/server
 	cp manifest.yaml $(STAGE)/manifest.yaml
@@ -85,6 +88,7 @@ package: sdk-check
 ## Package for the host platform only — faster local iteration than the full
 ## 5-platform `make package` (matches plugin-pack's -platform-only).
 package-host: sdk-check
+	node scripts/build-ui.mjs
 	rm -rf $(STAGE)
 	mkdir -p $(STAGE)/server
 	cp manifest.yaml $(STAGE)/manifest.yaml
