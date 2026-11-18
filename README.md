@@ -57,3 +57,26 @@ The plugin never reads a selected path through its executable or a webhook.
 Native plugins remain trusted code, not sandboxed extensions. Installing this
 plugin is an explicit trust decision. Its executable supplies only the managed
 process required by the plugin contract.
+
+### CI host and dependency audit
+
+The package smoke test uses the supporting Kandev source revision in
+`.kandev-tooling-ref`. It installs the real STL package and checks interactive
+previews in chat and file panels on desktop and phone layouts. The older SDK
+minimum host does not have the file-viewer contract. Before release, replace
+the development compatibility floor with the actual supporting host release.
+
+`make audit-recipes` checks all dependencies. Until 2026-12-18, it permits only
+GHSA-fc5q-39xc-vjpf in development dependencies and its transitive reports.
+As of 2026-11-18, picomatch has no patched release. Recipe tests use fixed,
+repository-owned glob patterns. These tools do not ship in the plugin archive.
+Production exposure, another high or critical advisory, an invalid audit result,
+or an expired exception fails the check. Remove the exception when a fix is available.
+
+### Screenshots
+
+Captured by the installed-package test on desktop and phone layouts.
+
+![STL model in the Kandev desktop file panel](docs/screenshots/desktop.png)
+
+![STL model in the Kandev phone file panel](docs/screenshots/phone.png)
