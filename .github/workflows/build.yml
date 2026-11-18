@@ -36,9 +36,6 @@ jobs:
           repository: kdlbs/kandev
           path: plugin/.build/kandev-tooling
           ref: ${{ steps.tooling.outputs.ref }}
-          sparse-checkout: |
-            apps/backend
-            pluginsdk
 
       - name: Set up Go
         uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
@@ -65,10 +62,25 @@ jobs:
         working-directory: plugin
         run: make verify-package
 
-      - name: Install smoke-test browser
-        working-directory: plugin
-        run: npx playwright install --with-deps chromium
+      - name: Set up pnpm for the supporting host
+        uses: pnpm/action-setup@a8198c4bff370c8506180b035930dea56dbd5288 # v5
+        with:
+          package_json_file: plugin/.build/kandev-tooling/apps/package.json
 
-      - name: Smoke package on the published SDK minimum host
+      - name: Build the supporting host and E2E fixtures
+        working-directory: plugin/.build/kandev-tooling
+        run: |
+          pnpm --dir apps install --frozen-lockfile
+          make build-backend build-web-e2e build-e2e-plugin-package build-e2e-delivery-fixture build-e2e-send-now-fixture
+
+      - name: Install the supporting host's smoke-test browser
+        working-directory: plugin/.build/kandev-tooling/apps/web
+        run: pnpm exec playwright install --with-deps chromium
+
+      # File viewers require the unreleased host contract. Pin the source above
+      # until its release provides a real minimum host version.
+      - name: Test installed STL package in chat and file panels
         working-directory: plugin
-        run: sh scripts/test-minimum-host.sh
+        env:
+          KANDEV_SERVER_HOST: 127.0.0.1
+        run: KANDEV_HOST_SOURCE="$PWD/.build/kandev-tooling" npm run test:package-smoke
