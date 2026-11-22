@@ -1,5 +1,5 @@
 {
-  "name": "kandev-plugin-template-contract-tests",
+  "name": "kandev-plugin-stl",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,7 +9,13 @@
     "test:recipes": "vitest run recipes/source-control/ui",
     "typecheck:recipes": "tsc --project tsconfig.recipes.json --noEmit",
     "test:ui": "node --test tests/ui-action.test.js tests/smoke-http.test.js",
-    "test:host": "node scripts/smoke-minimum-host.mjs"
+    "test:host": "node scripts/smoke-minimum-host.mjs",
+    "build": "node scripts/build-ui.mjs",
+    "test": "node --test tests/parser.test.js",
+    "test:resource-limits": "node tests/measure-parser.mjs",
+    "test:package-smoke": "node scripts/test-host.mjs",
+    "test:e2e": "node scripts/test-host.mjs",
+    "check": "node --check src/parser.js && node --check src/scene.js && node --check src/index.js && node --check src/worker.js"
   },
   "devDependencies": {
     "@kdlbs/plugin-sdk": "0.1.0",
@@ -19,5 +25,9 @@
   },
   "overrides": {
     "nanoid": "5.1.16"
+  },
+  "dependencies": {
+    "esbuild": "0.28.2",
+    "three": "0.187.0"
   }
 }

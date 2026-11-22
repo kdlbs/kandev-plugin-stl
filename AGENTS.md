@@ -1,10 +1,10 @@
 # Plugin repository workflow
 
-This repository owns only `kandev-plugin-template`. Use the parent project's
+This repository owns only `kandev-plugin-stl`. Use the parent project's
 [create-kandev-plugin workflow](https://github.com/kdlbs/kandev/blob/f0e2e774cfe2df8a0d15e4c21dea7b48580e38fb/.agents/skills/create-kandev-plugin/SKILL.md)
 and [public authoring guide](https://github.com/kdlbs/kandev/blob/f0e2e774cfe2df8a0d15e4c21dea7b48580e38fb/docs/public/plugins-authoring.md).
-Preserve plugin identity, API v1, explicit webhook access, capabilities, settings,
-and opt-in recipe boundaries unless the requested change requires otherwise.
+Preserve plugin identity and manifest API v2. The viewer has no webhook or Host
+capabilities. Files reach the plugin only through the host file-viewer contract.
 
 Go and frontend SDKs share independent version `0.1.0`: use
 `github.com/kdlbs/kandev/pluginsdk v0.1.0` and exactly `@kdlbs/plugin-sdk` `0.1.0`.
@@ -23,9 +23,11 @@ go mod tidy
 make sdk-check check-format vet test audit-recipes build
 ```
 
-`make test` includes real backend/recipe tests, recipe type checking, UI Action
-and fallback tests, HTTP restart-polling checks, package-verifier negatives,
-and release-version negatives.
+`make test` runs the Go backend and bounded parser tests. `npm run check` checks
+JavaScript syntax. `npm run test:resource-limits` measures parser ceilings.
+`KANDEV_HOST_SOURCE=/path/to/kandev npm run test:package-smoke` runs desktop
+and phone tests against the built compatible development host. This command
+uses temporary test wrappers and removes them after the run.
 Verify standalone dependency resolution without sibling SDK sources.
 
 Packaging is separate: `plugin-pack` is backend-owned. Prepare the README's
