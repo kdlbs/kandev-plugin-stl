@@ -3,7 +3,7 @@ module kandev-plugin-stl
 go 1.26.0
 
 require (
-	github.com/kdlbs/kandev/pluginsdk v0.1.0
+	github.com/kdlbs/kandev/pluginsdk v0.4.0
 	github.com/stretchr/testify v1.11.1
 )
 

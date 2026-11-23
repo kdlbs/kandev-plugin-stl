@@ -77,8 +77,7 @@ jobs:
         working-directory: plugin/.build/kandev-tooling/apps/web
         run: pnpm exec playwright install --with-deps chromium
 
-      # File viewers require the unreleased host contract. Pin the source above
-      # until its release provides a real minimum host version.
+      # The pin above matches the minimum supported Stable host.
       - name: Test installed STL package in chat and file panels
         working-directory: plugin
         env:
