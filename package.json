@@ -18,7 +18,7 @@
     "check": "node --check src/parser.js && node --check src/scene.js && node --check src/index.js && node --check src/worker.js"
   },
   "devDependencies": {
-    "@kdlbs/plugin-sdk": "0.1.0",
+    "@kdlbs/plugin-sdk": "0.4.0",
     "playwright": "1.64.1",
     "typescript": "5.9.3",
     "vitest": "4.1.12"

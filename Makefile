@@ -18,7 +18,7 @@ KANDEV_TOOLING ?= $(CURDIR)/.build/kandev-tooling/apps/backend
 
 # Run after npm ci so both installed SDK records and the lockfile are checked.
 sdk-check:
-	go run github.com/kdlbs/kandev/pluginsdk/cmd/kandev-sdk-check@v0.1.0 --manifest manifest.yaml --frontend-sdk node_modules/@kdlbs/plugin-sdk
+	go run github.com/kdlbs/kandev/pluginsdk/cmd/kandev-sdk-check@v0.4.0 --manifest manifest.yaml --frontend-sdk node_modules/@kdlbs/plugin-sdk
 
 ## Build the plugin binary for the host platform (development use). kandev
 ## itself always installs from `make package`/`package-host` output, not this.

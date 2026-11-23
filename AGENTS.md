@@ -6,12 +6,12 @@ and [public authoring guide](https://github.com/kdlbs/kandev/blob/f0e2e774cfe2df
 Preserve plugin identity and manifest API v2. The viewer has no webhook or Host
 capabilities. Files reach the plugin only through the host file-viewer contract.
 
-Go and frontend SDKs share independent version `0.1.0`: use
-`github.com/kdlbs/kandev/pluginsdk v0.1.0` and exactly `@kdlbs/plugin-sdk` `0.1.0`.
+Go and frontend SDKs share independent version `0.4.0`: use
+`github.com/kdlbs/kandev/pluginsdk v0.4.0` and exactly `@kdlbs/plugin-sdk` `0.4.0`.
 Do not restore SDK-local replacements, file links, or sibling compilation inputs.
 Generated protocol imports belong under `github.com/kdlbs/kandev/pluginsdk/proto/`.
 Read installed `sdk-release.json` records before changing the minimum host;
-currently both require `0.99.0` and support manifest API versions 1 and 2.
+both require Kandev `0.103.0` and support manifest API versions 1 and 2.
 Regenerate committed lockfiles with Go/npm. Keep SDK, host, plugin, and API
 versions distinct, and upgrade deliberately.
 

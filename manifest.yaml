@@ -6,7 +6,7 @@ description: Rotate, zoom, and inspect the dimensions of STL models.
 author: kdlbs
 categories: [tools]
 # Development floor only. Release is blocked until the host file-viewer API ships.
-min_kandev_version: "0.100.0"
+min_kandev_version: "0.103.0"
 runtime:
   type: binary
   executables:

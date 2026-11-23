@@ -9,11 +9,9 @@ STL stores no units. Dimensions and grid spacing use model units.
 
 ## Development status
 
-This package requires the file-viewer host changes developed with it. It is not
-published. The manifest's `0.100.0` floor is a development placeholder, **not** a
-claim that released Kandev 0.100.0 supports this API. Publication is blocked until
-the host API and SDK are released and this minimum is updated. The UI explicitly
-rejects hosts without `registerFileViewer`.
+The package requires Kandev `0.103.0` or later and uses plugin SDK `0.4.0`.
+The UI rejects hosts without `registerFileViewer`. The STL package is not yet
+published.
 
 Source was created from `kdlbs/kandev-plugin-template` at
 `be21ae09e091c73fd185244d678ecad4038291d0`. No template backend capabilities,
@@ -62,9 +60,8 @@ process required by the plugin contract.
 
 The package smoke test uses the supporting Kandev source revision in
 `.kandev-tooling-ref`. It installs the real STL package and checks interactive
-previews in chat and file panels on desktop and phone layouts. The older SDK
-minimum host does not have the file-viewer contract. Before release, replace
-the development compatibility floor with the actual supporting host release.
+previews in chat and file panels on desktop and phone layouts. The pinned host
+source is the commit for the declared minimum Stable release.
 
 `make audit-recipes` checks all dependencies. Until 2026-12-18, it permits only
 GHSA-fc5q-39xc-vjpf in development dependencies and its transitive reports.
