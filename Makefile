@@ -68,14 +68,14 @@ vet:
 	go vet ./server/...
 
 ## Cross-compile server/plugin-<goos>-<goarch>[.exe] for every platform in
-## manifest.yaml's runtime.executables, stage manifest.yaml + ui/ alongside
+## manifest.yaml's runtime.executables, stage the manifest, icon, and UI alongside
 ## them, and pack the tree into $(PKG_OUT) with
 ## backend-owned cmd/plugin-pack from the pinned tooling checkout. Install the tarball via Settings > Plugins or curl -F package=@...
 package: sdk-check
 	node scripts/build-ui.mjs
 	rm -rf $(STAGE)
 	mkdir -p $(STAGE)/server
-	cp manifest.yaml $(STAGE)/manifest.yaml
+	cp manifest.yaml icon.png $(STAGE)/
 	cp -r ui $(STAGE)/ui
 	CGO_ENABLED=0 GOOS=linux   GOARCH=amd64 go build -o $(STAGE)/server/plugin-linux-amd64       ./server
 	CGO_ENABLED=0 GOOS=linux   GOARCH=arm64 go build -o $(STAGE)/server/plugin-linux-arm64       ./server
@@ -92,7 +92,7 @@ package-host: sdk-check
 	node scripts/build-ui.mjs
 	rm -rf $(STAGE)
 	mkdir -p $(STAGE)/server
-	cp manifest.yaml $(STAGE)/manifest.yaml
+	cp manifest.yaml icon.png $(STAGE)/
 	cp -r ui $(STAGE)/ui
 	go build -o $(STAGE)/server/plugin-$$(go env GOOS)-$$(go env GOARCH)$$(go env GOEXE) ./server
 	cd "$(KANDEV_TOOLING)" && go run ./cmd/plugin-pack -dir $(CURDIR)/$(STAGE) -out $(CURDIR)/$(PKG_OUT) -platform-only

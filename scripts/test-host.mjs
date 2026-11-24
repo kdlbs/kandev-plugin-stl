@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const host = process.env.KANDEV_HOST_SOURCE;
@@ -9,11 +9,15 @@ if (!host)
     "Set KANDEV_HOST_SOURCE to the compatible Kandev source checkout.",
   );
 const web = path.join(host, "apps/web");
-const dir = fs.mkdtempSync(path.join(web, "e2e/tests/stl-package-"));
-const archivePath = path.join(root, "kandev-plugin-stl-0.1.0.tar.gz");
+const packageFile = execFileSync("make", ["--no-print-directory", "-s", "package-file"], {
+  cwd: root,
+  encoding: "utf8",
+}).trim();
+const archivePath = path.join(root, packageFile);
 if (!fs.existsSync(archivePath))
   throw Error("Run make package-host before the host smoke test.");
 fs.mkdirSync(path.join(root, ".build"), { recursive: true });
+const dir = fs.mkdtempSync(path.join(web, "e2e/tests/stl-package-"));
 const quote = JSON.stringify;
 try {
   for (const [project, mobile] of [

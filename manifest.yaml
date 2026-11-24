@@ -4,6 +4,7 @@ version: "0.1.1"
 display_name: STL viewer
 description: Rotate, zoom, and inspect the dimensions of STL models.
 author: kdlbs
+icon: icon.png
 categories: [tools]
 # Development floor only. Release is blocked until the host file-viewer API ships.
 min_kandev_version: "0.103.0"

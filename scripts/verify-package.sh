@@ -15,7 +15,8 @@ mode=$2
 host_platform=${3-}
 [ -d "$package_dir" ] || fail "package directory not found: $package_dir"
 
-for required in manifest.yaml ui/index.js ui/worker.js ui/viewer.css checksums.txt; do
+payload_files='manifest.yaml icon.png ui/index.js ui/worker.js ui/viewer.css'
+for required in $payload_files checksums.txt; do
 	[ -f "$package_dir/$required" ] || fail "missing required file: $required"
 done
 
@@ -82,7 +83,7 @@ forbidden_path=$(find "$package_dir" \
 	-print -quit)
 [ -z "$forbidden_path" ] || fail "forbidden recipe or development path: ${forbidden_path#"$package_dir"/}"
 
-expected_files=$(printf '%s\n' manifest.yaml ui/index.js ui/worker.js ui/viewer.css checksums.txt $executable_paths | LC_ALL=C sort)
+expected_files=$(printf '%s\n' $payload_files checksums.txt $executable_paths | LC_ALL=C sort)
 actual_files=$(cd "$package_dir" && find . -type f -print | sed 's#^\./##' | LC_ALL=C sort)
 [ "$actual_files" = "$expected_files" ] || {
 	printf 'unexpected package file inventory\nexpected:\n%s\nfound:\n%s\n' "$expected_files" "$actual_files" >&2
@@ -95,7 +96,7 @@ checksum_entries=$(awk '
 	END { if (NR == 0 || invalid) exit 1 }
 ' "$package_dir/checksums.txt") || fail 'checksums.txt has invalid lines'
 checksum_files=$(printf '%s\n' "$checksum_entries" | LC_ALL=C sort)
-expected_checksum_files=$(printf '%s\n' manifest.yaml ui/index.js ui/worker.js ui/viewer.css $executable_paths | LC_ALL=C sort)
+expected_checksum_files=$(printf '%s\n' $payload_files $executable_paths | LC_ALL=C sort)
 [ "$checksum_files" = "$expected_checksum_files" ] || fail 'checksums.txt does not list every package file exactly once'
 
 if command -v sha256sum >/dev/null 2>&1; then
