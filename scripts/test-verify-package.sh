@@ -10,7 +10,8 @@ create_fixture() {
 	fixture=$1
 	mkdir -p "$fixture/server" "$fixture/ui"
 	cat > "$fixture/manifest.yaml" <<'EOF'
-api_version: 1
+api_version: 2
+icon: icon.png
 runtime:
   type: binary
   executables:
@@ -20,7 +21,10 @@ runtime:
     darwin-arm64: "server/plugin-darwin-arm64"
     windows-amd64: "server/plugin-windows-amd64.exe"
 EOF
-	printf 'export default {}\n' > "$fixture/ui/bundle.js"
+	cp "$repo_dir/icon.png" "$fixture/icon.png"
+	printf 'export default {}\n' > "$fixture/ui/index.js"
+	printf 'self.onmessage = () => {};\n' > "$fixture/ui/worker.js"
+	printf 'canvas { display: block; }\n' > "$fixture/ui/viewer.css"
 	for executable in \
 		plugin-linux-amd64 plugin-linux-arm64 \
 		plugin-darwin-amd64 plugin-darwin-arm64 \
@@ -90,7 +94,8 @@ rm -rf "$serialized/server"
 mkdir "$serialized/server"
 cp "$host_fixture/$host_executable" "$serialized/$host_executable"
 cat > "$serialized/manifest.yaml" <<EOF
-api_version: 1
+api_version: 2
+icon: icon.png
 runtime:
     type: binary
     executables:
@@ -102,7 +107,7 @@ sh "$verify_script" "$serialized" host "$host_platform" >/dev/null
 expect_failure 'host-only manifest in a full archive' "$serialized" full
 expect_failure 'serialized manifest with a different host' "$serialized" host freebsd-amd64
 
-for required in manifest.yaml ui/bundle.js \
+for required in manifest.yaml icon.png ui/index.js ui/worker.js ui/viewer.css \
 	server/plugin-linux-amd64 server/plugin-linux-arm64 \
 	server/plugin-darwin-amd64 server/plugin-darwin-arm64 \
 	server/plugin-windows-amd64.exe; do
@@ -118,11 +123,11 @@ rm "$test_dir/missing-checksums/checksums.txt"
 expect_failure 'missing checksums.txt' "$test_dir/missing-checksums"
 
 copy_fixture corrupt-ui
-printf '// changed after checksum generation\n' >> "$test_dir/corrupt-ui/ui/bundle.js"
+printf '// changed after checksum generation\n' >> "$test_dir/corrupt-ui/ui/index.js"
 expect_failure 'corrupt UI contents' "$test_dir/corrupt-ui"
 
 copy_fixture incomplete-checksums
-sed '/  ui\/bundle.js$/d' "$test_dir/incomplete-checksums/checksums.txt" > "$test_dir/incomplete-checksums/checksums.next"
+sed '/  icon\.png$/d' "$test_dir/incomplete-checksums/checksums.txt" > "$test_dir/incomplete-checksums/checksums.next"
 mv "$test_dir/incomplete-checksums/checksums.next" "$test_dir/incomplete-checksums/checksums.txt"
 expect_failure 'an omitted checksum entry' "$test_dir/incomplete-checksums"
 
