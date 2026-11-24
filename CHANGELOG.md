@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2] - 2026-11-24
+
+### Changed
+
+- feat: add STL viewer marketplace icon (#3) (45de5c9)
+
+
 ## [0.1.1] - 2026-11-23
 
 ### Changed
